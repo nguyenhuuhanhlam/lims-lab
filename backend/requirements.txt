@@ -1,6 +1,7 @@
 # ===== Core =====
 fastapi
 uvicorn[standard]
+scalar-fastapi
 
 # ===== Database =====
 sqlalchemy
@@ -14,7 +15,8 @@ pydantic-settings
 
 # ===== Auth & Security =====
 python-jose
-passlib[bcrypt]
+passlib==1.7.4
+bcrypt==3.2.2
 
 # ===== File / Upload =====
 python-multipart
