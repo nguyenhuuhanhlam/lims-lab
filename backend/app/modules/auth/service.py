@@ -3,6 +3,7 @@ from app.modules.auth import sql
 from app.core.security import hash_password, verify_password, create_access_token
 from fastapi import HTTPException
 
+
 def register_user(username: str, password: str, full_name: str | None):
     if sql.get_user_by_username(username):
         raise HTTPException(400, "Username already exists")
@@ -24,7 +25,4 @@ def login_user(username: str, password: str):
 
     token = create_access_token(user["id"])
 
-    return {
-        "access_token": token,
-        "token_type": "bearer"
-    }
+    return {"access_token": token, "token_type": "bearer"}
