@@ -9,13 +9,6 @@ EXPIRE_MIN = 60
 pwd = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def hash_password(password: str) -> str:
-    print(
-    "DEBUG password =",
-    password,
-    type(password),
-    len(password.encode("utf-8")) if isinstance(password, str) else "NOT STR"
-)
-
     return pwd.hash(password)
 
 def verify_password(password: str, hashed: str) -> bool:
