@@ -9,6 +9,7 @@ load_dotenv()
 _POOL_SIZE = 10
 _pool = queue.Queue(maxsize=_POOL_SIZE)
 
+
 def _create_conn():
     return pymysql.connect(
         host=os.getenv("DB_HOST"),
@@ -20,12 +21,15 @@ def _create_conn():
         autocommit=False,
     )
 
+
 # init pool
 for _ in range(_POOL_SIZE):
     _pool.put(_create_conn())
 
+
 def get_conn():
     return _pool.get()
+
 
 def release_conn(conn):
     _pool.put(conn)
