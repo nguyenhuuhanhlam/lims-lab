@@ -4,11 +4,14 @@ import Layout from './layouts'
 
 const App = () => {
   return (
-    <div>
-      App
-<Layout />
-    </div>
-    )
+    <ConfigProvider
+      theme={{
+        algorithm: theme.darkAlgorithm
+      }}
+    >
+      <Layout />
+    </ConfigProvider>
+  )
 }
 
 export default App
