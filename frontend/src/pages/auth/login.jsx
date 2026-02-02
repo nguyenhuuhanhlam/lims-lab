@@ -1,3 +1,4 @@
+import React from "react";
 import { Button, Form, Input, Card, Typography, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { apiLogin } from "@/api/auth.api";
@@ -5,7 +6,7 @@ import { setToken } from "@/utils/token";
 
 const { Title, Text } = Typography;
 
-export default function Login() {
+const Login = () => {
     const [form] = Form.useForm();
     const [loading, setLoading] = React.useState(false);
 
@@ -27,25 +28,19 @@ export default function Login() {
 
     return (
         <div
-            style={{
-                minHeight: "100vh",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                background: "#f5f7fa",
-            }}
+            className="flex items-center justify-center w-full min-w-0 overflow-hidden bg-gray-100"
         >
             <Card
-                style={{ width: 360 }}
-                bordered={false}
+                className="w-[360px]"
+                variant="borderless"
             >
-                <Title level={3} style={{ textAlign: "center" }}>
+                <Title level={3} className="text-center">
                     LIMS Login
                 </Title>
 
                 <Text
                     type="secondary"
-                    style={{ display: "block", textAlign: "center", marginBottom: 24 }}
+                    className="block text-center mb-6"
                 >
                     Laboratory Information Management System
                 </Text>
@@ -97,3 +92,5 @@ export default function Login() {
         </div>
     );
 }
+
+export default Login

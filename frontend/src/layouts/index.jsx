@@ -29,6 +29,7 @@ const Layout = () => {
 		<ProLayout
 			{...layout_props}
 
+
 			title="LIMS"
 			logo={Logo}
 
@@ -36,6 +37,10 @@ const Layout = () => {
 				pathname: location.pathname,
 			}}
 			route={route_config.route}
+
+			menuItemRender={(item, dom) => (
+				<Link to={item.path || '/'}>{dom}</Link>
+			)}
 
 			avatarProps={{
 				src: <Avatar />,
