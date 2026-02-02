@@ -1,4 +1,5 @@
 import { Route, Routes, Link, useLocation, useNavigate } from 'react-router-dom'
+import { Suspense } from 'react'
 import { ProLayout } from '@ant-design/pro-components'
 import { Button, Dropdown, Result, Avatar } from 'antd'
 import { FrownOutlined, HomeFilled } from '@ant-design/icons'
@@ -77,9 +78,20 @@ const Layout = () => {
 					}
 				/>
 
-				{flatRoutes.map(item => (
-					<Route key={item.path} path={item.path} element={item.component} />
-				))}
+				{flatRoutes.map(item => {
+					const Component = item.component
+					return (
+						<Route
+							key={item.path}
+							path={item.path}
+							element={
+								<Suspense fallback={<div>Loading...</div>}>
+									<Component />
+								</Suspense>
+							}
+						/>
+					)
+				})}
 
 				<Route
 					path="*"

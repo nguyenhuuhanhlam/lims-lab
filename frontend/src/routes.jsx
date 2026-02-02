@@ -1,5 +1,7 @@
 import { IconCircleDottedLetterR } from '@tabler/icons-react'
-import { lazy, Suspense } from 'react'
+import { lazy } from 'react'
+
+// import Slip from '@/pages/request/slip'
 
 const modules = import.meta.glob('/src/pages/**/*.jsx')
 
@@ -7,11 +9,7 @@ const safeLazy = (path) => {
     const loader = modules[path]
 
     if (!loader) {
-        return () => (
-            <div style={{ padding: 24 }}>
-                🚧 Page is not implemented
-            </div>
-        )
+        return () => <div>🚧 Page is not implemented</div>
     }
 
     return lazy(loader)
