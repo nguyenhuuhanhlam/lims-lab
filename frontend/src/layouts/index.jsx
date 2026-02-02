@@ -29,7 +29,6 @@ const Layout = () => {
 		<ProLayout
 			{...layout_props}
 
-
 			title="LIMS"
 			logo={Logo}
 
@@ -44,7 +43,7 @@ const Layout = () => {
 
 			avatarProps={{
 				src: <Avatar />,
-				title: 'U',
+				title: 'Guest',
 				render: (props, dom) => {
 					return (
 						<>

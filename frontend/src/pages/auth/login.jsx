@@ -28,7 +28,7 @@ const Login = () => {
 
     return (
         <div
-            className="flex items-center justify-center w-full min-w-0 overflow-hidden bg-gray-100"
+            className="flex items-center justify-center pt-8"
         >
             <Card
                 className="w-[360px]"
@@ -84,7 +84,7 @@ const Login = () => {
                             loading={loading}
                             block
                         >
-                            Đăng nhập
+                            Login
                         </Button>
                     </Form.Item>
                 </Form>

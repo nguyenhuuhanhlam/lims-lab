@@ -1,9 +1,9 @@
 import http from "./http"
 
 export const apiLogin = (payload) => {
-    return http.post("/auth/login", payload)
+    return http.post("/api/v1/auth/login", payload)
 }
 
 export const apiMe = () => {
-    return http.get("/auth/me")
+    return http.get("/api/v1/auth/me")
 }

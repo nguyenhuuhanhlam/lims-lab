@@ -1,15 +1,12 @@
 export const layout_props = {
-	layout: 'mix',
+	layout: 'side',
 	siderMenuType: 'group',
 	siderWidth: 220,
 	defaultCollapsed: true,
 	breakpoint: false,
 
+	style: { width: '100vw', height: '100vh' },
 	contentStyle: {
-		// display: 'flex',
-		// justifyContent: 'center',
-		// alignItems: 'center',
-		padding: 0,
-		minWidth: 0,
+		padding: 0
 	},
 }
