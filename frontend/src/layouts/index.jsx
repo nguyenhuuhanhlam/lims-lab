@@ -1,10 +1,10 @@
 import { Route, Routes, Link, useLocation, useNavigate } from 'react-router-dom'
 import { ProLayout } from '@ant-design/pro-components'
-import { Button, Result, Avatar } from 'antd'
-import {FrownOutlined, HomeFilled} from '@ant-design/icons'
+import { Button, Dropdown, Result, Avatar } from 'antd'
+import { FrownOutlined, HomeFilled } from '@ant-design/icons'
 
 import route_config from '../routes'
-import {layout_props} from './config'
+import { layout_props } from './config'
 import Logo from '../assets/cube.svg'
 
 const getRoutes = (routes) => {
@@ -31,7 +31,7 @@ const Layout = () => {
 
 			title="LIMS"
 			logo={Logo}
-			
+
 			location={{
 				pathname: location.pathname,
 			}}
@@ -43,7 +43,16 @@ const Layout = () => {
 				render: (props, dom) => {
 					return (
 						<>
-							<span>{dom}</span>
+							<Dropdown
+								menu={{
+									items: [
+										{ key: '1', label: 'Profile' },
+										{ key: '2', label: 'Logout' },
+									]
+								}}
+							>
+								{dom}
+							</Dropdown>
 						</>
 					)
 				}
@@ -53,14 +62,14 @@ const Layout = () => {
 				<Route
 					path="/"
 					element={
-					<div className="flex">
-						<Result
-							title="Home"
-							icon={<HomeFilled className="text-[32px]!" />}
-							subTitle="Welcome to the app"
-							extra={<Link to="/welcome"><Button type="primary">Go to Welcome</Button></Link>}
-						/>
-					</div>
+						<div className="flex">
+							<Result
+								title="Home"
+								icon={<HomeFilled className="text-[32px]!" />}
+								subTitle="Welcome to the app"
+								extra={<Link to="/welcome"><Button type="primary">Go to Welcome</Button></Link>}
+							/>
+						</div>
 					}
 				/>
 
@@ -73,7 +82,7 @@ const Layout = () => {
 					element={
 						<Result
 							title="404"
-							icon={<FrownOutlined/>}
+							icon={<FrownOutlined />}
 							subTitle="Sorry, the page you visited does not exist."
 							extra={<Button type="primary" onClick={() => navigate('/')}>Back Home</Button>}
 						/>
