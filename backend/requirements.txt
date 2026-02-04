@@ -1,40 +1,34 @@
-# ===== Core =====
 fastapi
 uvicorn[standard]
 scalar-fastapi
 
-# ===== Database =====
 sqlalchemy
 alembic
 pymysql
 python-dotenv
 
-# ===== Validation =====
 pydantic
 pydantic-settings
 
-# ===== Auth & Security =====
 python-jose
 passlib==1.7.4
 bcrypt==3.2.2
 
-# ===== File / Upload =====
 python-multipart
 aiofiles
 
-# ===== Email =====
 fastapi-mail
 
-# ===== Background tasks =====
 celery
 redis
 
-# ===== Utils =====
 qrcode[pil]
 pillow
 python-dateutil
 rich
 
-# ===== Testing =====
 pytest
 httpx
+
+gspread
+oauth2client
