@@ -1,1 +1,2 @@
 .env
+app/modules/google/credentials.json

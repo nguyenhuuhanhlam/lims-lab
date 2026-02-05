@@ -1,9 +1,9 @@
 const Slip = () => {
-    return (
-        <div>
-            <h1>Slip</h1>
-        </div>
-    )
-}
+  return (
+    <div className="p-4">
+      <span>Slip</span>
+    </div>
+  );
+};
 
-export default Slip
+export default Slip;
