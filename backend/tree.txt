@@ -1,0 +1,26 @@
+.
+├── app
+│   ├── api
+│   │   ├── router.py
+│   │   └── v1
+│   │       └── health.py
+│   ├── core
+│   │   ├── config.py
+│   │   └── security.py
+│   ├── db
+│   │   └── mysql.py
+│   ├── main.py
+│   └── modules
+│       ├── auth
+│       │   ├── router.py
+│       │   ├── service.py
+│       │   └── sql.py
+│       └── google
+│           ├── credentials.json
+│           ├── router.py
+│           └── service.py
+├── notes.txt
+├── requirements.txt
+└── tree.txt
+
+9 directories, 15 files

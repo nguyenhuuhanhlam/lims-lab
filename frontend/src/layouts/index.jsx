@@ -1,12 +1,16 @@
 import { Route, Routes, Link, useLocation, useNavigate } from 'react-router-dom'
 import { Suspense } from 'react'
 import { ProLayout } from '@ant-design/pro-components'
-import { Button, Dropdown, Result, Avatar } from 'antd'
+import { Button, Dropdown, Result, Avatar, message } from 'antd'
 import { FrownOutlined, HomeFilled } from '@ant-design/icons'
 
 import route_config from '../routes'
+import RequireAuth from '@/pages/auth/require-auth'
+import { clearToken } from '@/utils/token'
+import Login from '@/pages/auth/login'
 import { layout_props } from './config'
-import Logo from '../assets/cube.svg'
+import Logo from '../assets/mtlab-logo.svg'
+
 
 const getRoutes = (routes) => {
 	let flatRoutes = []
@@ -25,6 +29,16 @@ const Layout = () => {
 	const location = useLocation()
 	const navigate = useNavigate()
 	const flatRoutes = getRoutes(route_config.route.routes)
+
+	const handleLogout = async () => {
+		try {
+			// optional: await apiLogout()
+		} finally {
+			clearToken()
+			message.success("Logged out successfully")
+			navigate('/login', { replace: true })
+		}
+	}
 
 	return (
 		<ProLayout
@@ -52,7 +66,7 @@ const Layout = () => {
 								menu={{
 									items: [
 										{ key: '1', label: 'Profile' },
-										{ key: '2', label: 'Logout' },
+										{ key: '2', label: 'Logout', onClick: handleLogout },
 									]
 								}}
 							>
@@ -64,6 +78,7 @@ const Layout = () => {
 			}}
 		>
 			<Routes>
+				<Route path="/login" element={<Login />} />
 				<Route
 					path="/"
 					element={
@@ -80,14 +95,21 @@ const Layout = () => {
 
 				{flatRoutes.map(item => {
 					const Component = item.component
+
+					const element = (
+						<Suspense fallback={<div>Loading...</div>}>
+							<Component />
+						</Suspense>
+					)
+
 					return (
 						<Route
 							key={item.path}
 							path={item.path}
 							element={
-								<Suspense fallback={<div>Loading...</div>}>
-									<Component />
-								</Suspense>
+								item.auth
+									? <RequireAuth>{element}</RequireAuth>
+									: element
 							}
 						/>
 					)

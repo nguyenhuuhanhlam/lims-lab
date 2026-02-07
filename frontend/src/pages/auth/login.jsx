@@ -1,47 +1,49 @@
-import React from "react";
-import { Button, Form, Input, Card, Typography, message } from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import { apiLogin } from "@/api/auth.api";
-import { setToken } from "@/utils/token";
+import React from 'react'
+import { Button, Form, Input, Card, Typography, message } from 'antd'
+import { UserOutlined, LockOutlined } from '@ant-design/icons'
+import { useNavigate, useLocation } from 'react-router-dom'
 
-const { Title, Text } = Typography;
+import { apiLogin } from '@/api/auth.api'
+import { setToken } from '@/utils/token'
+
+const { Title, Text } = Typography
 
 const Login = () => {
-    const [form] = Form.useForm();
-    const [loading, setLoading] = React.useState(false);
+    const [form] = Form.useForm()
+    const [loading, setLoading] = React.useState(false)
+    const navigate = useNavigate()
+    const location = useLocation()
+
+    const from = location.state?.from?.pathname || "/"
 
     const onFinish = async (values) => {
-        setLoading(true);
+        setLoading(true)
         try {
-            const res = await apiLogin(values);
-            setToken(res.data.access_token);
-            message.success("Đăng nhập thành công");
-            window.location.href = "/";
+            const res = await apiLogin(values)
+
+            setToken(res.data.access_token)
+
+            message.success("Login successful")
+
+            navigate(from, { replace: true })
+
         } catch (err) {
             message.error(
-                err.response?.data?.detail || "Sai tài khoản hoặc mật khẩu"
-            );
+                err.response?.data?.detail || "Invalid username or password"
+            )
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
-    };
+    }
 
     return (
-        <div
-            className="flex items-center justify-center pt-8"
-        >
-            <Card
-                className="w-[360px]"
-                variant="borderless"
-            >
+        <div className="flex items-center justify-center pt-8">
+            <Card className="w-[360px]" variant="borderless">
                 <Title level={3} className="text-center">
                     LIMS Login
                 </Title>
 
-                <Text
-                    type="secondary"
-                    className="block text-center mb-6"
-                >
+                <Text type="secondary" className="block text-center mb-6">
                     Laboratory Information Management System
                 </Text>
 
@@ -55,7 +57,7 @@ const Login = () => {
                         name="username"
                         label="Username"
                         rules={[
-                            { required: true, message: "Vui lòng nhập username" },
+                            { required: true, message: "Please enter your username" },
                         ]}
                     >
                         <Input
@@ -68,7 +70,7 @@ const Login = () => {
                         name="password"
                         label="Password"
                         rules={[
-                            { required: true, message: "Vui lòng nhập mật khẩu" },
+                            { required: true, message: "Please enter your password" },
                         ]}
                     >
                         <Input.Password
@@ -90,7 +92,7 @@ const Login = () => {
                 </Form>
             </Card>
         </div>
-    );
+    )
 }
 
 export default Login

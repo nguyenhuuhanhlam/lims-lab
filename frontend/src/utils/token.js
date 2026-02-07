@@ -1,10 +1,10 @@
-const KEY = "lims_token";
+const KEY = "lims_token"
 
 export const setToken = (token) =>
-    localStorage.setItem(KEY, token);
+    localStorage.setItem(KEY, token)
 
 export const getToken = () =>
-    localStorage.getItem(KEY);
+    localStorage.getItem(KEY)
 
 export const clearToken = () =>
-    localStorage.removeItem(KEY);
+    localStorage.removeItem(KEY)
