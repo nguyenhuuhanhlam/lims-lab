@@ -1,6 +1,6 @@
 # modules/auth/service.py
 from app.modules.auth import sql
-from app.core.security import hash_password, verify_password, create_access_token
+from app.core.security import get_password_hash, verify_password, create_access_token
 from fastapi import HTTPException
 
 
@@ -8,7 +8,7 @@ def register_user(username: str, password: str, full_name: str | None):
     if sql.get_user_by_username(username):
         raise HTTPException(400, "Username already exists")
 
-    password_hash = hash_password(password)
+    password_hash = get_password_hash(password)
     sql.create_user(username, password_hash, full_name)
 
     return {"message": "Register success"}
