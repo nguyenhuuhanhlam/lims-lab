@@ -1,4 +1,3 @@
-# modules/auth/service.py
 from app.modules.auth import sql
 from app.core.security import get_password_hash, verify_password, create_access_token
 from fastapi import HTTPException
@@ -23,6 +22,6 @@ def login_user(username: str, password: str):
     if not user["is_active"]:
         raise HTTPException(403, "User disabled")
 
-    token = create_access_token(user["id"])
+    token = create_access_token(subject=str(user["id"]))
 
     return {"access_token": token, "token_type": "bearer"}

@@ -8,10 +8,12 @@
 │   │   ├── config.py
 │   │   └── security.py
 │   ├── db
+│   │   ├── deps.py
 │   │   └── mysql.py
 │   ├── main.py
 │   └── modules
 │       ├── auth
+│       │   ├── deps.py
 │       │   ├── router.py
 │       │   ├── service.py
 │       │   └── sql.py
@@ -23,4 +25,4 @@
 ├── requirements.txt
 └── tree.txt
 
-9 directories, 15 files
+9 directories, 17 files
