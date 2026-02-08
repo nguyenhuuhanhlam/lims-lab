@@ -1,4 +1,3 @@
-# modules/auth/sql.py
 from app.db.mysql import get_conn, release_conn
 
 
