@@ -34,7 +34,7 @@ def get_current_user(
     with conn.cursor() as cursor:
         cursor.execute(
             """
-            SELECT id, username, email, is_active
+            SELECT id, username, email, is_active, role
             FROM users
             WHERE id = %s
             LIMIT 1
@@ -50,3 +50,15 @@ def get_current_user(
         )
 
     return user
+
+
+def require_role(*allowed_roles: str):
+    def _role_checker(user=Depends(get_current_user)):
+        if user["role"] not in allowed_roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Permission denied",
+            )
+        return user
+
+    return _role_checker

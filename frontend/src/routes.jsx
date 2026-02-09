@@ -1,4 +1,4 @@
-import { IconCircleDottedLetterR } from '@tabler/icons-react'
+import { IconCircleDottedLetterR, IconClipboard, IconClipboardText } from '@tabler/icons-react'
 import { lazy } from 'react'
 
 const modules = import.meta.glob('/src/pages/**/*.jsx')
@@ -26,12 +26,14 @@ export default {
                 {
                     path: "/request-slip",
                     name: "Slip",
+                    icon: <IconClipboard />,
                     auth: true,
                     component: safeLazy('/src/pages/request/slip.jsx')
                 },
                 {
                     path: "/request-contract",
                     name: "Contract",
+                    icon: <IconClipboardText />,
                     auth: false,
                     component: safeLazy('/src/pages/request/contract.jsx')
                 }

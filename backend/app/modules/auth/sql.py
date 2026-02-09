@@ -7,7 +7,7 @@ def get_user_by_username(username: str):
         with conn.cursor() as cur:
             cur.execute(
                 """
-                SELECT id, username, password_hash, is_active
+                SELECT id, username, password_hash, is_active, role
                 FROM users
                 WHERE username = %s
             """,
