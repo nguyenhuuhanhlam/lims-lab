@@ -1,5 +1,7 @@
 from app.db.mysql import get_conn, release_conn
 
+from app.modules.auth.constants import Roles
+
 
 def get_user_by_username(username: str):
     conn = get_conn()
@@ -18,16 +20,22 @@ def get_user_by_username(username: str):
         release_conn(conn)
 
 
-def create_user(username: str, password_hash: str, full_name: str | None):
+def create_user(
+    username: str,
+    password_hash: str,
+    full_name: str | None,
+    role: str = Roles.CLIENT,
+    is_active: bool = True,
+):
     conn = get_conn()
     try:
         with conn.cursor() as cur:
             cur.execute(
                 """
-                INSERT INTO users (username, password_hash, full_name)
-                VALUES (%s, %s, %s)
+                INSERT INTO users (username, password_hash, full_name, role, is_active)
+                VALUES (%s, %s, %s, %s, %s)
             """,
-                (username, password_hash, full_name),
+                (username, password_hash, full_name, role, is_active),
             )
         conn.commit()
     finally:
