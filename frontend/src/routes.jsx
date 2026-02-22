@@ -38,6 +38,26 @@ export default {
                     component: safeLazy('/src/pages/request/contract.jsx')
                 }
             ]
+        }, {
+            path: '/admin',
+            name: 'ADMIN',
+            icon: <IconCircleDottedLetterR />,
+            routes: [
+                {
+                    path: '/admin/users',
+                    name: 'Users',
+                    icon: <IconClipboard />,
+                    auth: true,
+                    component: safeLazy('/src/pages/admin/users.jsx')
+                },
+                {
+                    path: '/admin/create-user',
+                    name: 'Create User',
+                    icon: <IconClipboard />,
+                    auth: true,
+                    component: safeLazy('/src/pages/auth/register.jsx')
+                }
+            ]
         }]
     },
     location: {

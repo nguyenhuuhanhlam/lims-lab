@@ -7,3 +7,7 @@ export const apiLogin = (payload) => {
 export const apiMe = () => {
     return http.get("/api/v1/auth/me")
 }
+
+export const apiRegister = (payload) => {
+    return http.post("/api/v1/auth/register", payload)
+}
