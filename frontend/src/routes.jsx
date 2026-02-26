@@ -54,6 +54,7 @@ export default {
                     name: 'Users',
                     icon: <IconUser />,
                     auth: true,
+                    blockRoles: ['client'],
                     component: safeLazy('/src/pages/admin/users.jsx')
                 },
                 {
@@ -61,6 +62,7 @@ export default {
                     name: 'Create User',
                     icon: <IconUserPlus />,
                     auth: true,
+                    blockRoles: ['client'],
                     component: safeLazy('/src/pages/auth/register.jsx')
                 }
             ]

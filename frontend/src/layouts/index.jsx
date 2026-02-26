@@ -71,6 +71,25 @@ const Layout = () => {
 				<Link to={item.path || '/'}>{dom}</Link>
 			)}
 
+			postMenuData={(menuData) => {
+				const filterMenu = (items) => {
+					return items
+						.filter(item => {
+							if (user && item.blockRoles && item.blockRoles.includes(user.role)) {
+								return false
+							}
+							return true
+						})
+						.map(item => {
+							if (item.children) {
+								return { ...item, children: filterMenu(item.children) }
+							}
+							return item
+						})
+				}
+				return filterMenu(menuData)
+			}}
+
 			avatarProps={{
 				src: <Avatar>{user?.username?.charAt(0).toUpperCase() || 'G'}</Avatar>,
 				title: user?.username || 'Guest',
@@ -85,7 +104,9 @@ const Layout = () => {
 							}}
 							trigger={['click']}
 						>
-							<div style={{ width: '100%' }}>{dom}</div>
+							<div className="w-full flex items-center justify-center overflow-hidden">
+								{dom}
+							</div>
 						</Dropdown>
 					)
 				}
@@ -122,7 +143,7 @@ const Layout = () => {
 							path={item.path}
 							element={
 								item.auth
-									? <RequireAuth>{element}</RequireAuth>
+									? <RequireAuth blockRoles={item.blockRoles}>{element}</RequireAuth>
 									: element
 							}
 						/>
