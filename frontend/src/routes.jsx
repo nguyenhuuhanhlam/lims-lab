@@ -1,5 +1,11 @@
-import { IconCircleDottedLetterR, IconClipboard, IconClipboardText } from '@tabler/icons-react'
 import { lazy } from 'react'
+import {
+    IconCircleDottedLetterR,
+    IconClipboard,
+    IconClipboardText,
+    IconUser,
+    IconUserPlus
+} from '@tabler/icons-react'
 
 const modules = import.meta.glob('/src/pages/**/*.jsx')
 
@@ -46,14 +52,14 @@ export default {
                 {
                     path: '/admin/users',
                     name: 'Users',
-                    icon: <IconClipboard />,
+                    icon: <IconUser />,
                     auth: true,
                     component: safeLazy('/src/pages/admin/users.jsx')
                 },
                 {
                     path: '/admin/create-user',
                     name: 'Create User',
-                    icon: <IconClipboard />,
+                    icon: <IconUserPlus />,
                     auth: true,
                     component: safeLazy('/src/pages/auth/register.jsx')
                 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Form, Input, Card, Typography, message } from 'antd'
+import { Button, Form, Input, Card, Typography, App } from 'antd'
 import { UserOutlined, LockOutlined, IdcardOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 
@@ -11,6 +11,8 @@ const Register = () => {
     const [form] = Form.useForm()
     const [loading, setLoading] = React.useState(false)
     const navigate = useNavigate()
+
+    const { message } = App.useApp()
 
     const onFinish = async (values) => {
         setLoading(true)

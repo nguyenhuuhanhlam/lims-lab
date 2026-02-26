@@ -1,13 +1,15 @@
 import { Route, Routes, Link, useLocation, useNavigate } from 'react-router-dom'
 import { Suspense } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { ProLayout } from '@ant-design/pro-components'
-import { Button, Dropdown, Result, Avatar, message } from 'antd'
+import { Button, Dropdown, Result, Avatar, App } from 'antd'
 import { FrownOutlined, HomeFilled } from '@ant-design/icons'
 
-import route_config from '../routes'
 import RequireAuth from '@/pages/auth/require-auth'
-import { clearToken } from '@/utils/token'
+import { clearToken, getToken } from '@/utils/token'
 import Login from '@/pages/auth/login'
+import { apiMe } from '@/api/auth.api'
+import route_config from '../routes'
 import { layout_props } from './config'
 import Logo from '../assets/mtlab-logo.svg'
 
@@ -30,11 +32,24 @@ const Layout = () => {
 	const navigate = useNavigate()
 	const flatRoutes = getRoutes(route_config.route.routes)
 
+	const queryClient = useQueryClient()
+	const { message } = App.useApp()
+
+	const { data: user } = useQuery({
+		queryKey: ['currentUser'],
+		queryFn: async () => {
+			const res = await apiMe()
+			return res.data
+		},
+		enabled: !!getToken(),
+	})
+
 	const handleLogout = async () => {
 		try {
 			// optional: await apiLogout()
 		} finally {
 			clearToken()
+			queryClient.removeQueries({ queryKey: ['currentUser'] })
 			message.success("Logged out successfully")
 			navigate('/login', { replace: true })
 		}
@@ -57,22 +72,21 @@ const Layout = () => {
 			)}
 
 			avatarProps={{
-				src: <Avatar />,
-				title: 'Guest',
+				src: <Avatar>{user?.username?.charAt(0).toUpperCase() || 'G'}</Avatar>,
+				title: user?.username || 'Guest',
 				render: (props, dom) => {
 					return (
-						<>
-							<Dropdown
-								menu={{
-									items: [
-										{ key: '1', label: 'Profile' },
-										{ key: '2', label: 'Logout', onClick: handleLogout },
-									]
-								}}
-							>
-								{dom}
-							</Dropdown>
-						</>
+						<Dropdown
+							menu={{
+								items: [
+									{ key: '1', label: 'Profile' },
+									{ key: '2', label: 'Logout', onClick: handleLogout },
+								]
+							}}
+							trigger={['click']}
+						>
+							<div style={{ width: '100%' }}>{dom}</div>
+						</Dropdown>
 					)
 				}
 			}}

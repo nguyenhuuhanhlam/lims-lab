@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Depends
 from app.modules.auth.service import register_user, login_user
+from app.modules.auth.deps import get_current_user
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -21,3 +22,8 @@ async def login(req: Request):
         username=data.get("username"),
         password=data.get("password"),
     )
+
+
+@router.get("/me")
+async def get_me(user=Depends(get_current_user)):
+    return user

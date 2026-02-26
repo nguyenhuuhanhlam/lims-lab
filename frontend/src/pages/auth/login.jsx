@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Form, Input, Card, Typography, message } from 'antd'
+import { Button, Form, Input, Card, Typography, App } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
 import { useNavigate, useLocation } from 'react-router-dom'
 
@@ -15,6 +15,8 @@ const Login = () => {
     const location = useLocation()
 
     const from = location.state?.from?.pathname || "/"
+
+    const { message } = App.useApp()
 
     const onFinish = async (values) => {
         setLoading(true)
