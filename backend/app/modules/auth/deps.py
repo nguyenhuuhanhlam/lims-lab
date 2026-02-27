@@ -34,7 +34,7 @@ def get_current_user(
     with conn.cursor() as cursor:
         cursor.execute(
             """
-            SELECT id, username, email, is_active, role
+            SELECT id, username, email, full_name, is_active, role
             FROM users
             WHERE id = %s
             LIMIT 1

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Request, Depends
-from app.modules.auth.service import register_user, login_user
+from app.modules.auth.service import register_user, login_user, change_password
 from app.modules.auth.deps import get_current_user
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
@@ -27,3 +27,13 @@ async def login(req: Request):
 @router.get("/me")
 async def get_me(user=Depends(get_current_user)):
     return user
+
+
+@router.put("/change-password")
+async def change_password_endpoint(req: Request, user=Depends(get_current_user)):
+    data = await req.json()
+    return change_password(
+        user=user,
+        old_password=data.get("old_password"),
+        new_password=data.get("new_password"),
+    )

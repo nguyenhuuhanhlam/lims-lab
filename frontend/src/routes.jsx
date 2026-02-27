@@ -25,6 +25,12 @@ export default {
         name: "Root",
 
         routes: [{
+            path: "/profile",
+            name: "Profile",
+            hideInMenu: true,
+            auth: true,
+            component: safeLazy('/src/pages/auth/user-profile.jsx')
+        }, {
             path: "/request",
             name: "REQUESTS FORMS",
             icon: <IconCircleDottedLetterR />,

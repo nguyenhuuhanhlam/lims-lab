@@ -40,3 +40,20 @@ def create_user(
         conn.commit()
     finally:
         release_conn(conn)
+
+
+def update_password(user_id: int, password_hash: str):
+    conn = get_conn()
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                UPDATE users
+                SET password_hash = %s
+                WHERE id = %s
+            """,
+                (password_hash, user_id),
+            )
+        conn.commit()
+    finally:
+        release_conn(conn)

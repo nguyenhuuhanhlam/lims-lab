@@ -25,3 +25,14 @@ def login_user(username: str, password: str):
     token = create_access_token(subject=str(user["id"]))
 
     return {"access_token": token, "token_type": "bearer"}
+
+
+def change_password(user: dict, old_password: str, new_password: str):
+    db_user = sql.get_user_by_username(user["username"])
+    if not db_user or not verify_password(old_password, db_user["password_hash"]):
+        raise HTTPException(400, "Invalid old password")
+
+    new_password_hash = get_password_hash(new_password)
+    sql.update_password(user["id"], new_password_hash)
+
+    return {"message": "Password changed successfully"}

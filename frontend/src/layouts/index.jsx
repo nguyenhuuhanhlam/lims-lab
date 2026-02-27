@@ -94,17 +94,24 @@ const Layout = () => {
 				src: <Avatar>{user?.username?.charAt(0).toUpperCase() || 'G'}</Avatar>,
 				title: user?.username || 'Guest',
 				render: (props, dom) => {
+					if (!user) {
+						return (
+							<div className="w-full flex items-center justify-center overflow-hidden">
+								{dom}
+							</div>
+						)
+					}
 					return (
 						<Dropdown
 							menu={{
 								items: [
-									{ key: '1', label: 'Profile' },
-									{ key: '2', label: 'Logout', onClick: handleLogout },
+									{ key: 'profile', label: 'Profile', onClick: () => navigate('/profile') },
+									{ key: 'logout', label: 'Logout', onClick: handleLogout },
 								]
 							}}
 							trigger={['click']}
 						>
-							<div className="w-full flex items-center justify-center overflow-hidden">
+							<div className="w-full flex items-center justify-center overflow-hidden cursor-pointer hover:bg-black/5" style={{ padding: '0 8px', borderRadius: 6 }}>
 								{dom}
 							</div>
 						</Dropdown>
