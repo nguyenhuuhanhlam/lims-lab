@@ -9,7 +9,7 @@ def get_user_by_username(username: str):
         with conn.cursor() as cur:
             cur.execute(
                 """
-                SELECT id, username, password_hash, is_active, role
+                SELECT id, username, email, password_hash, is_active, role
                 FROM users
                 WHERE username = %s
             """,
@@ -53,6 +53,56 @@ def update_password(user_id: int, password_hash: str):
                 WHERE id = %s
             """,
                 (password_hash, user_id),
+            )
+        conn.commit()
+    finally:
+        release_conn(conn)
+
+
+def get_users():
+    conn = get_conn()
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT id, username, email, full_name, is_active, role
+                FROM users
+            """
+            )
+            return cur.fetchall()
+    finally:
+        release_conn(conn)
+
+
+def update_user(
+    user_id: int, full_name: str | None, email: str | None, role: str, is_active: bool
+):
+    conn = get_conn()
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                UPDATE users
+                SET full_name = %s, email = %s, role = %s, is_active = %s
+                WHERE id = %s
+            """,
+                (full_name, email, role, is_active, user_id),
+            )
+        conn.commit()
+    finally:
+        release_conn(conn)
+
+
+def delete_user(user_id: int):
+    conn = get_conn()
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                DELETE FROM users
+                WHERE id = %s
+            """,
+                (user_id,),
             )
         conn.commit()
     finally:

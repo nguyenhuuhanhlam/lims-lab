@@ -1,4 +1,6 @@
 export const layout_props = {
+	title: "LIMS",
+
 	layout: 'side',
 	siderMenuType: 'group',
 	siderWidth: 220,

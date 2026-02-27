@@ -36,3 +36,19 @@ def change_password(user: dict, old_password: str, new_password: str):
     sql.update_password(user["id"], new_password_hash)
 
     return {"message": "Password changed successfully"}
+
+
+def get_users():
+    return sql.get_users()
+
+
+def update_user(
+    user_id: int, full_name: str | None, email: str | None, role: str, is_active: bool
+):
+    sql.update_user(user_id, full_name, email, role, is_active)
+    return {"message": "User updated successfully"}
+
+
+def delete_user(user_id: int):
+    sql.delete_user(user_id)
+    return {"message": "User deleted successfully"}

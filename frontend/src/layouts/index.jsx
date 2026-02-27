@@ -59,7 +59,6 @@ const Layout = () => {
 		<ProLayout
 			{...layout_props}
 
-			title="LIMS"
 			logo={Logo}
 
 			location={{
@@ -111,7 +110,7 @@ const Layout = () => {
 							}}
 							trigger={['click']}
 						>
-							<div className="w-full flex items-center justify-center overflow-hidden cursor-pointer hover:bg-black/5" style={{ padding: '0 8px', borderRadius: 6 }}>
+							<div className="w-full flex items-center justify-center">
 								{dom}
 							</div>
 						</Dropdown>
