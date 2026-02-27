@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { Button, message, Popconfirm, Tag, Modal, Form, Input, Select, Switch } from 'antd';
+import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import { ProTable } from '@ant-design/pro-components';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { apiGetUsers, apiUpdateUser, apiDeleteUser } from '@/api/auth.api';
@@ -186,7 +187,7 @@ const Users = () => {
 						label="Status"
 						valuePropName="checked"
 					>
-						<Switch checkedChildren="Active" unCheckedChildren="Inactive" />
+						<Switch checkedChildren={<CheckOutlined />} unCheckedChildren={<CloseOutlined />} />
 					</Form.Item>
 				</Form>
 			</Modal>

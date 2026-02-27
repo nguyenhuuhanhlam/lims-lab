@@ -7,3 +7,18 @@ CREATE TABLE users (
     is_active BOOLEAN DEFAULT TRUE,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE service_requests (
+  id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  request_date date DEFAULT NULL,
+  request_created_at datetime DEFAULT NULL,
+  request_code varchar(16) DEFAULT NULL,
+  request_customer varchar(255) DEFAULT NULL,
+  project_name varchar(255) DEFAULT NULL,
+  location varchar(255) DEFAULT NULL,
+  site_address varchar(255) DEFAULT NULL,
+  service_name varchar(255) DEFAULT NULL,
+  service_type tinyint(3) unsigned DEFAULT NULL,
+  customer_data longtext DEFAULT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
