@@ -40,7 +40,7 @@ export default {
                     name: "Slip",
                     icon: <IconClipboard />,
                     auth: true,
-                    component: safeLazy('/src/pages/request/slip.jsx')
+                    component: safeLazy('/src/pages/request/slips.jsx')
                 },
                 {
                     path: "/request-contract",

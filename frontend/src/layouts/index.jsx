@@ -95,9 +95,18 @@ const Layout = () => {
 				render: (props, dom) => {
 					if (!user) {
 						return (
-							<div className="w-full flex items-center justify-center overflow-hidden">
-								{dom}
-							</div>
+							<Dropdown
+								menu={{
+									items: [
+										{ key: 'login', label: 'Login', onClick: () => navigate('/login') },
+									]
+								}}
+								trigger={['click']}
+							>
+								<div className="w-full flex items-center justify-center overflow-hidden cursor-pointer">
+									{dom}
+								</div>
+							</Dropdown>
 						)
 					}
 					return (
@@ -110,7 +119,7 @@ const Layout = () => {
 							}}
 							trigger={['click']}
 						>
-							<div className="w-full flex items-center justify-center">
+							<div className="w-full flex items-center justify-center cursor-pointer">
 								{dom}
 							</div>
 						</Dropdown>
