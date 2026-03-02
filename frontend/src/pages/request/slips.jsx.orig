@@ -204,7 +204,7 @@ const RequestSlips = () => {
 				request={async (params) => {
 					try {
 						const res = await apiGetRequests();
-						let data = Array.isArray(res.data) ? res.data : (res.data?.items || []);
+						let data = res.data || [];
 						// Client-side search for simplicity matching ProTable 'search'
 						if (params.request_code) {
 							data = data.filter(item => item.request_code?.includes(params.request_code));

@@ -18,7 +18,7 @@ def _create_conn():
         database=os.getenv("DB_NAME"),
         port=int(os.getenv("DB_PORT", 3306)),
         cursorclass=DictCursor,
-        autocommit=False,
+        autocommit=True,
     )
 
 
