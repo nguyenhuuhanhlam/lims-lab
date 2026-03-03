@@ -97,7 +97,7 @@ const RequestSlips = () => {
 					</tr>
 					<tr>
 						<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Service Type</th>
-						<td style="border: 1px solid #ddd; padding: 8px;">${record.service_type || ''}</td>
+						<td style="border: 1px solid #ddd; padding: 8px;">${record.service_type === 1 ? 'Slip Request' : record.service_type === 2 ? 'Contract Request' : record.service_type || ''}</td>
 					</tr>
 					<tr>
 						<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Customer Data</th>
@@ -278,7 +278,10 @@ const RequestSlips = () => {
 							<Input />
 						</Form.Item>
 						<Form.Item name="service_type" label="Service Type">
-							<Input type="number" />
+							<Select placeholder="Select service type">
+								<Select.Option value={1}>Slip Request</Select.Option>
+								<Select.Option value={2}>Contract Request</Select.Option>
+							</Select>
 						</Form.Item>
 						<Form.Item name="customer_data" label="Data" className="col-span-2">
 							<Input.TextArea rows={4} />
