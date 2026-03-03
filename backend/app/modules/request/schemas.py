@@ -14,6 +14,7 @@ class ServiceRequestBase(BaseModel):
     service_name: Optional[str] = None
     service_type: Optional[int] = None
     customer_data: Optional[str] = None
+    task_data: Optional[str] = None
 
 
 class ServiceRequestCreate(ServiceRequestBase):

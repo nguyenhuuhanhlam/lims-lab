@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { Button, message, Popconfirm, Modal, Form, Input, DatePicker, Select, Space } from 'antd';
 import { ProTable } from '@ant-design/pro-components';
-import { IconEdit, IconTrash, IconPrinter } from '@tabler/icons-react';
+import { IconEdit, IconTrash, IconPrinter, IconPlus } from '@tabler/icons-react';
 import dayjs from 'dayjs';
 import { apiGetRequests, apiCreateRequest, apiUpdateRequest, apiDeleteRequest } from '@/api/request.api';
 
@@ -11,8 +11,14 @@ const RequestSlips = () => {
 	const [editingSlip, setEditingSlip] = useState(null);
 	const [form] = Form.useForm();
 
+	const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+	const [taskForm] = Form.useForm();
+	const [taskDataSource, setTaskDataSource] = useState([]);
+	const [editingTaskIndex, setEditingTaskIndex] = useState(null);
+
 	const handleAdd = () => {
 		setEditingSlip(null);
+		setTaskDataSource([]);
 		form.resetFields();
 		setIsModalOpen(true);
 	};
@@ -21,6 +27,13 @@ const RequestSlips = () => {
 		setEditingSlip(record);
 		setIsModalOpen(true);
 		setTimeout(() => {
+			let taskData = [];
+			if (record.task_data) {
+				try {
+					taskData = JSON.parse(record.task_data);
+				} catch (e) { }
+			}
+			setTaskDataSource(taskData);
 			form.setFieldsValue({
 				...record,
 				request_date: record.request_date ? dayjs(record.request_date) : null,
@@ -40,9 +53,13 @@ const RequestSlips = () => {
 
 	const handleSave = async (values) => {
 		try {
+
+			const taskDataStr = taskDataSource.length > 0 ? JSON.stringify(taskDataSource) : null;
+
 			const payload = {
 				...values,
 				request_date: values.request_date ? values.request_date.format('YYYY-MM-DD') : null,
+				task_data: taskDataStr,
 			};
 
 			if (editingSlip) {
@@ -60,7 +77,69 @@ const RequestSlips = () => {
 		}
 	};
 
+	const handleSaveTask = (values) => {
+		const formattedTask = {
+			...values,
+			return_date: values.return_date ? values.return_date.format('YYYY-MM-DD') : null
+		};
+		if (editingTaskIndex !== null) {
+			const newData = [...taskDataSource];
+			newData[editingTaskIndex] = formattedTask;
+			setTaskDataSource(newData);
+		} else {
+			setTaskDataSource([...taskDataSource, formattedTask]);
+		}
+		setIsTaskModalOpen(false);
+	};
+
+	const handleEditTask = (record, index) => {
+		setEditingTaskIndex(index);
+		taskForm.setFieldsValue({
+			...record,
+			return_date: record.return_date ? dayjs(record.return_date) : null
+		});
+		setIsTaskModalOpen(true);
+	};
+
+	const handleDeleteTask = (index) => {
+		setTaskDataSource(prev => prev.filter((_, i) => i !== index));
+	};
+
 	const handlePrint = (record) => {
+		let taskDataHtml = '';
+		if (record.task_data) {
+			try {
+				const tasks = JSON.parse(record.task_data);
+				if (tasks.length > 0) {
+					taskDataHtml = `
+						<h3 style="margin-top: 20px;">Task List</h3>
+						<table style="width: 100%; border-collapse: collapse;">
+							<thead>
+								<tr>
+									<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Material Type</th>
+									<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Unit</th>
+									<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Quantity</th>
+									<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Return Date</th>
+									<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Request Content</th>
+								</tr>
+							</thead>
+							<tbody>
+								${tasks.map(t => `
+									<tr>
+										<td style="border: 1px solid #ddd; padding: 8px;">${t.material_type || ''}</td>
+										<td style="border: 1px solid #ddd; padding: 8px;">${t.unit || ''}</td>
+										<td style="border: 1px solid #ddd; padding: 8px;">${t.quantity || ''}</td>
+										<td style="border: 1px solid #ddd; padding: 8px;">${t.return_date || ''}</td>
+										<td style="border: 1px solid #ddd; padding: 8px;">${t.request_content || ''}</td>
+									</tr>
+								`).join('')}
+							</tbody>
+						</table>
+					`;
+				}
+			} catch (e) { }
+		}
+
 		// Create a temporary print window or write to current document then print
 		const printContent = `
 			<div style="font-family: Arial, sans-serif; padding: 20px;">
@@ -104,6 +183,9 @@ const RequestSlips = () => {
 						<td style="border: 1px solid #ddd; padding: 8px;">${record.customer_data || ''}</td>
 					</tr>
 				</table>
+				
+				${taskDataHtml}
+
 				<div style="margin-top: 40px; display: flex; justify-content: space-between;">
 					<div style="text-align: center; width: 45%;">
 						<strong>Customer Representative</strong><br/><br/><br/><br/>
@@ -119,11 +201,8 @@ const RequestSlips = () => {
 
 		const printWindow = window.open('', '', 'height=600,width=800');
 		if (printWindow) {
-			printWindow.document.write('<html><head><title>Print Slip</title>');
-			printWindow.document.write('</head><body >');
-			printWindow.document.write(printContent);
-			printWindow.document.write('</body></html>');
-			printWindow.document.close();
+			printWindow.document.head.innerHTML = '<title>Print Slip</title>';
+			printWindow.document.body.innerHTML = printContent;
 			printWindow.focus();
 			// Slight delay to ensure content is loaded before printing
 			setTimeout(() => {
@@ -285,6 +364,70 @@ const RequestSlips = () => {
 						</Form.Item>
 						<Form.Item name="customer_data" label="Data" className="col-span-2">
 							<Input.TextArea rows={4} />
+						</Form.Item>
+					</div>
+
+					<div className="mt-6 border-t pt-4">
+						<h3 className="mb-4 text-lg font-medium">Task List</h3>
+						<ProTable
+							columns={[
+								{ title: 'Material Type', dataIndex: 'material_type' },
+								{ title: 'Unit', dataIndex: 'unit' },
+								{ title: 'Quantity', dataIndex: 'quantity' },
+								{ title: 'Return Date', dataIndex: 'return_date', valueType: 'date' },
+								{ title: 'Request Content', dataIndex: 'request_content' },
+								{
+									title: 'Actions',
+									valueType: 'option',
+									width: 100,
+									render: (text, record, index) => [
+										<Button key="edit" type="text" icon={<IconEdit size={16} />} onClick={() => handleEditTask(record, index)} />,
+										<Button key="delete" type="text" danger icon={<IconTrash size={16} />} onClick={() => handleDeleteTask(index)} />
+									]
+								}
+							]}
+							dataSource={taskDataSource}
+							rowKey={(record, index) => index}
+							search={false}
+							options={false}
+							pagination={false}
+							toolBarRender={() => [
+								<Button key="add" icon={<IconPlus size={16} />} type="primary" onClick={() => {
+									setEditingTaskIndex(null);
+									taskForm.resetFields();
+									setIsTaskModalOpen(true);
+								}}>
+									Add Task
+								</Button>
+							]}
+						/>
+					</div>
+				</Form>
+			</Modal>
+
+			<Modal
+				title={editingTaskIndex !== null ? "Edit Task" : "Create Task"}
+				open={isTaskModalOpen}
+				onOk={taskForm.submit}
+				onCancel={() => setIsTaskModalOpen(false)}
+				destroyOnHidden
+			>
+				<Form form={taskForm} layout="vertical" onFinish={handleSaveTask}>
+					<div className="grid grid-cols-2 gap-4">
+						<Form.Item name="material_type" label="Material Type">
+							<Input placeholder="Enter material type" />
+						</Form.Item>
+						<Form.Item name="unit" label="Unit">
+							<Input placeholder="E.g., Box, Bottle, Kg..." />
+						</Form.Item>
+						<Form.Item name="quantity" label="Quantity">
+							<Input placeholder="Enter quantity" />
+						</Form.Item>
+						<Form.Item name="return_date" label="Return Date">
+							<DatePicker className="w-full" format="YYYY-MM-DD" placeholder="Select date" />
+						</Form.Item>
+						<Form.Item name="request_content" label="Request Content" className="col-span-2">
+							<Input.TextArea rows={2} placeholder="Enter specific request content..." />
 						</Form.Item>
 					</div>
 				</Form>

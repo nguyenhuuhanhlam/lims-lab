@@ -11,7 +11,7 @@ def get_requests():
                 """
                 SELECT id, request_date, request_created_at, request_code, 
                        request_customer, project_name, location, site_address, 
-                       service_name, service_type, customer_data
+                       service_name, service_type, customer_data, task_data
                 FROM service_requests
                 ORDER BY id DESC
                 """
@@ -29,7 +29,7 @@ def get_request_by_id(request_id: int):
                 """
                 SELECT id, request_date, request_created_at, request_code, 
                        request_customer, project_name, location, site_address, 
-                       service_name, service_type, customer_data
+                       service_name, service_type, customer_data, task_data
                 FROM service_requests
                 WHERE id = %s
                 """,
@@ -51,6 +51,7 @@ def create_request(
     service_name: Optional[str] = None,
     service_type: Optional[int] = None,
     customer_data: Optional[str] = None,
+    task_data: Optional[str] = None,
 ):
     conn = get_conn()
     try:
@@ -60,8 +61,8 @@ def create_request(
                 INSERT INTO service_requests (
                     request_date, request_created_at, request_code, 
                     request_customer, project_name, location, site_address, 
-                    service_name, service_type, customer_data
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    service_name, service_type, customer_data, task_data
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """,
                 (
                     request_date,
@@ -74,6 +75,7 @@ def create_request(
                     service_name,
                     service_type,
                     customer_data,
+                    task_data,
                 ),
             )
             conn.commit()
@@ -94,6 +96,7 @@ def update_request(
     service_name: Optional[str] = None,
     service_type: Optional[int] = None,
     customer_data: Optional[str] = None,
+    task_data: Optional[str] = None,
 ):
     conn = get_conn()
     try:
@@ -104,7 +107,7 @@ def update_request(
                 SET request_date = %s, request_created_at = %s, request_code = %s, 
                     request_customer = %s, project_name = %s, location = %s, 
                     site_address = %s, service_name = %s, service_type = %s, 
-                    customer_data = %s
+                    customer_data = %s, task_data = %s
                 WHERE id = %s
                 """,
                 (
@@ -118,6 +121,7 @@ def update_request(
                     service_name,
                     service_type,
                     customer_data,
+                    task_data,
                     request_id,
                 ),
             )

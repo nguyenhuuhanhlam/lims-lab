@@ -19,6 +19,9 @@ CREATE TABLE service_requests (
   site_address varchar(255) DEFAULT NULL,
   service_name varchar(255) DEFAULT NULL,
   service_type tinyint(3) unsigned DEFAULT NULL,
+  
   customer_data longtext DEFAULT NULL,
+  task_data longtext DEFAULT NULL,
+
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
