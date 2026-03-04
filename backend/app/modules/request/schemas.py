@@ -5,7 +5,6 @@ from pydantic import BaseModel
 
 class ServiceRequestBase(BaseModel):
     request_date: Optional[date] = None
-    request_created_at: Optional[datetime] = None
     request_code: Optional[str] = None
     request_customer: Optional[str] = None
     project_name: Optional[str] = None
@@ -27,6 +26,8 @@ class ServiceRequestUpdate(ServiceRequestBase):
 
 class ServiceRequest(ServiceRequestBase):
     id: int
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

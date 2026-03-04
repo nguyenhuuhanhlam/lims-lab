@@ -40,6 +40,7 @@ export default {
                     name: "Slip",
                     icon: <IconClipboard />,
                     auth: true,
+                    blockRoles: ['client'],
                     component: safeLazy('/src/pages/request/slips.jsx')
                 },
                 {

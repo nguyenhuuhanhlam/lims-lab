@@ -1,6 +1,6 @@
 from app.db.mysql import get_conn, release_conn
 from typing import Optional
-from datetime import date, datetime
+from datetime import date
 
 
 def get_requests():
@@ -9,7 +9,7 @@ def get_requests():
         with conn.cursor() as cur:
             cur.execute(
                 """
-                SELECT id, request_date, request_created_at, request_code, 
+                SELECT id, request_date, created_at, updated_at, request_code, 
                        request_customer, project_name, location, site_address, 
                        service_name, service_type, customer_data, task_data
                 FROM service_requests
@@ -27,7 +27,7 @@ def get_request_by_id(request_id: int):
         with conn.cursor() as cur:
             cur.execute(
                 """
-                SELECT id, request_date, request_created_at, request_code, 
+                SELECT id, request_date, created_at, updated_at, request_code, 
                        request_customer, project_name, location, site_address, 
                        service_name, service_type, customer_data, task_data
                 FROM service_requests
@@ -42,7 +42,6 @@ def get_request_by_id(request_id: int):
 
 def create_request(
     request_date: Optional[date] = None,
-    request_created_at: Optional[datetime] = None,
     request_code: Optional[str] = None,
     request_customer: Optional[str] = None,
     project_name: Optional[str] = None,
@@ -59,14 +58,13 @@ def create_request(
             cur.execute(
                 """
                 INSERT INTO service_requests (
-                    request_date, request_created_at, request_code, 
+                    request_date, request_code, 
                     request_customer, project_name, location, site_address, 
                     service_name, service_type, customer_data, task_data
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """,
                 (
                     request_date,
-                    request_created_at,
                     request_code,
                     request_customer,
                     project_name,
@@ -87,7 +85,6 @@ def create_request(
 def update_request(
     request_id: int,
     request_date: Optional[date] = None,
-    request_created_at: Optional[datetime] = None,
     request_code: Optional[str] = None,
     request_customer: Optional[str] = None,
     project_name: Optional[str] = None,
@@ -104,7 +101,7 @@ def update_request(
             cur.execute(
                 """
                 UPDATE service_requests
-                SET request_date = %s, request_created_at = %s, request_code = %s, 
+                SET request_date = %s, request_code = %s, 
                     request_customer = %s, project_name = %s, location = %s, 
                     site_address = %s, service_name = %s, service_type = %s, 
                     customer_data = %s, task_data = %s
@@ -112,7 +109,6 @@ def update_request(
                 """,
                 (
                     request_date,
-                    request_created_at,
                     request_code,
                     request_customer,
                     project_name,
