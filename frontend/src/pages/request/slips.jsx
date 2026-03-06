@@ -3,7 +3,7 @@ import { Button, message, Popconfirm, Modal, Form, Input, DatePicker, Select, Sp
 import { ProTable } from '@ant-design/pro-components';
 import { IconEdit, IconTrash, IconPrinter, IconPlus } from '@tabler/icons-react';
 import dayjs from 'dayjs';
-import { apiGetRequests, apiCreateRequest, apiUpdateRequest, apiDeleteRequest } from '@/api/request.api';
+import { apiGetRequests, apiCreateRequest, apiUpdateRequest, apiDeleteRequest, apiGenerateRequestCode } from '@/api/request.api';
 import { printRequestSlip } from './print-slip';
 
 const RequestSlips = () => {
@@ -17,11 +17,20 @@ const RequestSlips = () => {
 	const [taskDataSource, setTaskDataSource] = useState([]);
 	const [editingTaskIndex, setEditingTaskIndex] = useState(null);
 
-	const handleAdd = () => {
+	const handleAdd = async () => {
 		setEditingSlip(null);
 		setTaskDataSource([]);
 		form.resetFields();
 		setIsModalOpen(true);
+		try {
+			const res = await apiGenerateRequestCode(1);
+			form.setFieldsValue({
+				request_code: res.data.code,
+				service_type: 1
+			});
+		} catch (error) {
+			console.error('Failed to generate code:', error);
+		}
 	};
 
 	const handleEdit = (record) => {
@@ -63,6 +72,15 @@ const RequestSlips = () => {
 			actionRef.current?.reload();
 		} catch (error) {
 			message.error('Failed to delete slip');
+		}
+	};
+
+	const handleServiceTypeChange = (val) => {
+		const currentCode = form.getFieldValue('request_code');
+		if (currentCode && currentCode.length > 0) {
+			form.setFieldsValue({
+				request_code: val + currentCode.substring(1)
+			});
 		}
 	};
 
@@ -245,48 +263,52 @@ const RequestSlips = () => {
 			/>
 
 			<Modal
-				title={editingSlip ? "Edit Slip" : "Create Slip"}
+				title={<span className="text-sm">{editingSlip ? "Edit Slip" : "Create Slip"}</span>}
 				open={isModalOpen}
 				onOk={form.submit}
 				onCancel={() => setIsModalOpen(false)}
 				destroyOnHidden
 				width={800}
+				okButtonProps={{ size: 'small' }}
+				cancelButtonProps={{ size: 'small' }}
 			>
 				<Form
 					form={form}
 					layout="vertical"
 					onFinish={handleSave}
+					size="small"
+					className="text-sm"
 				>
-					<div className="grid grid-cols-2 gap-4">
-						<Form.Item name="request_code" label="Request Code">
+					<div className="grid grid-cols-2 gap-x-4">
+						<Form.Item name="request_code" label="Request Code" style={{ marginBottom: 12 }}>
 							<Input />
 						</Form.Item>
-						<Form.Item name="request_date" label="Request Date">
+						<Form.Item name="request_date" label="Request Date" style={{ marginBottom: 12 }}>
 							<DatePicker className="w-full" format="YYYY-MM-DD" />
 						</Form.Item>
-						<Form.Item name="request_customer" label="Customer">
+						<Form.Item name="request_customer" label="Customer" style={{ marginBottom: 12 }}>
 							<Input />
 						</Form.Item>
-						<Form.Item name="project_name" label="Project">
+						<Form.Item name="project_name" label="Project" style={{ marginBottom: 12 }}>
 							<Input />
 						</Form.Item>
-						<Form.Item name="location" label="Location">
+						<Form.Item name="location" label="Location" style={{ marginBottom: 12 }}>
 							<Input />
 						</Form.Item>
-						<Form.Item name="site_address" label="Address">
+						<Form.Item name="site_address" label="Address" style={{ marginBottom: 12 }}>
 							<Input />
 						</Form.Item>
-						<Form.Item name="service_name" label="Service">
+						<Form.Item name="service_name" label="Service" style={{ marginBottom: 12 }}>
 							<Input />
 						</Form.Item>
-						<Form.Item name="service_type" label="Service Type">
-							<Select placeholder="Select service type">
+						<Form.Item name="service_type" label="Service Type" style={{ marginBottom: 12 }}>
+							<Select placeholder="Select service type" onChange={handleServiceTypeChange}>
 								<Select.Option value={1}>Slip Request</Select.Option>
 								<Select.Option value={2}>Contract Request</Select.Option>
 							</Select>
 						</Form.Item>
-						<Form.Item name="customer_data" label="Data" className="col-span-2">
-							<Input.TextArea rows={4} />
+						<Form.Item name="customer_data" label="Data" className="col-span-2" style={{ marginBottom: 12 }}>
+							<Input.TextArea rows={3} />
 						</Form.Item>
 					</div>
 
@@ -315,7 +337,7 @@ const RequestSlips = () => {
 							options={false}
 							pagination={false}
 							toolBarRender={() => [
-								<Button key="add" icon={<IconPlus size={16} />} type="primary" onClick={() => {
+								<Button key="add" icon={<IconPlus size={16} />} type="primary" size="small" onClick={() => {
 									setEditingTaskIndex(null);
 									taskForm.resetFields();
 									setIsTaskModalOpen(true);
@@ -329,27 +351,29 @@ const RequestSlips = () => {
 			</Modal>
 
 			<Modal
-				title={editingTaskIndex !== null ? "Edit Task" : "Create Task"}
+				title={<span className="text-sm">{editingTaskIndex !== null ? "Edit Task" : "Create Task"}</span>}
 				open={isTaskModalOpen}
 				onOk={taskForm.submit}
 				onCancel={() => setIsTaskModalOpen(false)}
 				destroyOnHidden
+				okButtonProps={{ size: 'small' }}
+				cancelButtonProps={{ size: 'small' }}
 			>
-				<Form form={taskForm} layout="vertical" onFinish={handleSaveTask}>
-					<div className="grid grid-cols-2 gap-4">
-						<Form.Item name="material_type" label="Material Type">
+				<Form form={taskForm} layout="vertical" onFinish={handleSaveTask} size="small" className="text-sm">
+					<div className="grid grid-cols-2 gap-x-4">
+						<Form.Item name="material_type" label="Material Type" style={{ marginBottom: 12 }}>
 							<Input placeholder="Enter material type" />
 						</Form.Item>
-						<Form.Item name="unit" label="Unit">
+						<Form.Item name="unit" label="Unit" style={{ marginBottom: 12 }}>
 							<Input placeholder="E.g., Box, Bottle, Kg..." />
 						</Form.Item>
-						<Form.Item name="quantity" label="Quantity">
+						<Form.Item name="quantity" label="Quantity" style={{ marginBottom: 12 }}>
 							<Input placeholder="Enter quantity" />
 						</Form.Item>
-						<Form.Item name="return_date" label="Return Date">
+						<Form.Item name="return_date" label="Return Date" style={{ marginBottom: 12 }}>
 							<DatePicker className="w-full" format="YYYY-MM-DD" placeholder="Select date" />
 						</Form.Item>
-						<Form.Item name="request_content" label="Request Content" className="col-span-2">
+						<Form.Item name="request_content" label="Request Content" className="col-span-2" style={{ marginBottom: 12 }}>
 							<Input.TextArea rows={2} placeholder="Enter specific request content..." />
 						</Form.Item>
 					</div>

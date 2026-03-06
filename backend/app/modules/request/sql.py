@@ -3,6 +3,19 @@ from typing import Optional
 from datetime import date
 
 
+def get_max_request_id():
+    conn = get_conn()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT MAX(id) as max_id FROM service_requests")
+            result = cur.fetchone()
+            if result and result["max_id"] is not None:
+                return int(result["max_id"])
+            return 0
+    finally:
+        release_conn(conn)
+
+
 def get_requests():
     conn = get_conn()
     try:

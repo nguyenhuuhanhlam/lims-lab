@@ -1,5 +1,9 @@
 import http from './http'
 
+export const apiGenerateRequestCode = (serviceType = 1) => {
+	return http.get(`/api/v1/requests/generate-code?service_type=${serviceType}`)
+}
+
 export const apiGetRequests = () => {
 	return http.get('/api/v1/requests/')
 }

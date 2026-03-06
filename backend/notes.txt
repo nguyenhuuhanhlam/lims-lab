@@ -10,19 +10,37 @@ CREATE TABLE users (
 
 CREATE TABLE service_requests (
   id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  
+  # ngày yêu cầu
   request_date date DEFAULT NULL,
+
   created_at datetime DEFAULT CURRENT_TIMESTAMP,
   updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  
+  # mã yêu cầu
   request_code varchar(16) DEFAULT NULL,
   request_customer varchar(255) DEFAULT NULL,
+
+  # tên dự án
   project_name varchar(255) DEFAULT NULL,
+  
+  # địa điểm xây dựng
   location varchar(255) DEFAULT NULL,
+  
+  # địa chỉ công trường
   site_address varchar(255) DEFAULT NULL,
+  
+  # tên dịch vụ
   service_name varchar(255) DEFAULT NULL,
+  
+  # 1: dạng phiếu (slip), 2: dạng hợp đồng (contract)
   service_type tinyint(3) unsigned DEFAULT NULL,
   
-  customer_data longtext DEFAULT NULL,
-  task_data longtext DEFAULT NULL,
+  # dữ liệu bổ sung thông tin về yêu cầ`u dạng json
+  request_data longtext DEFAULT NULL,
+  
+  # dữ liệu bổ sung dạng json
+  task_data longtext DEFAULT NULL, 
 
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
