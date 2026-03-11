@@ -1,15 +1,31 @@
 import { useRef, useState } from 'react';
-import { Button, message, Popconfirm, Modal, Form, Input, DatePicker, Select, Space } from 'antd';
+import { Button, message, Popconfirm, Modal, Form, Input, DatePicker, Tabs } from 'antd';
 import { ProTable } from '@ant-design/pro-components';
 import { IconEdit, IconTrash, IconPrinter, IconPlus } from '@tabler/icons-react';
 import dayjs from 'dayjs';
 import { apiGetRequests, apiCreateRequest, apiUpdateRequest, apiDeleteRequest, apiGenerateRequestCode } from '@/api/request.api';
 import { printRequestSlip } from './print-slip';
+import SlipRequestTab from './service-type-tabs/slip-request-tab';
+import ContractRequestTab from './service-type-tabs/contract-request-tab';
+
+const SERVICE_TYPE_TABS = [
+	{
+		key: '1',
+		label: 'Slip Request',
+		content: <SlipRequestTab />
+	},
+	{
+		key: '2',
+		label: 'Contract Request',
+		content: <ContractRequestTab />
+	}
+];
 
 const RequestSlips = () => {
 	const actionRef = useRef();
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [editingSlip, setEditingSlip] = useState(null);
+	const [activeServiceType, setActiveServiceType] = useState('1');
 	const [form] = Form.useForm();
 
 	const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
@@ -22,6 +38,7 @@ const RequestSlips = () => {
 		setTaskDataSource([]);
 		form.resetFields();
 		setIsModalOpen(true);
+		setActiveServiceType('1');
 		try {
 			const res = await apiGenerateRequestCode(1);
 			form.setFieldsValue({
@@ -36,6 +53,7 @@ const RequestSlips = () => {
 	const handleEdit = (record) => {
 		setEditingSlip(record);
 		setIsModalOpen(true);
+		setActiveServiceType(String(record.service_type || 1));
 		setTimeout(() => {
 			let taskData = [];
 			if (record.task_data) {
@@ -45,21 +63,21 @@ const RequestSlips = () => {
 			}
 			setTaskDataSource(taskData);
 
-			let customerDataFormValue = record.customer_data;
-			if (record.customer_data) {
+			let requestDataFormValue = record.request_data;
+			if (record.request_data) {
 				try {
-					let parsed = JSON.parse(record.customer_data);
+					let parsed = JSON.parse(record.request_data);
 					if (typeof parsed === 'string') {
-						customerDataFormValue = parsed;
+						requestDataFormValue = parsed;
 					} else {
-						customerDataFormValue = JSON.stringify(parsed, null, 2);
+						requestDataFormValue = JSON.stringify(parsed, null, 2);
 					}
 				} catch (e) { }
 			}
 
 			form.setFieldsValue({
 				...record,
-				customer_data: customerDataFormValue,
+				request_data: requestDataFormValue,
 				request_date: record.request_date ? dayjs(record.request_date) : null,
 			});
 		}, 0);
@@ -76,7 +94,9 @@ const RequestSlips = () => {
 	};
 
 	const handleServiceTypeChange = (val) => {
+		setActiveServiceType(String(val));
 		const currentCode = form.getFieldValue('request_code');
+		form.setFieldsValue({ service_type: val });
 		if (currentCode && currentCode.length > 0) {
 			form.setFieldsValue({
 				request_code: val + currentCode.substring(1)
@@ -89,15 +109,15 @@ const RequestSlips = () => {
 
 			const taskDataStr = taskDataSource.length > 0 ? JSON.stringify(taskDataSource) : null;
 
-			let finalCustomerData = null;
-			if (values.customer_data) {
-				let str = values.customer_data.trim();
+			let finalRequestData = null;
+			if (values.request_data) {
+				let str = values.request_data.trim();
 				if (str) {
 					try {
 						JSON.parse(str);
-						finalCustomerData = str; // already valid JSON
+						finalRequestData = str; // already valid JSON
 					} catch (e) {
-						finalCustomerData = JSON.stringify(str); // wrap plain text in JSON string
+						finalRequestData = JSON.stringify(str); // wrap plain text in JSON string
 					}
 				}
 			}
@@ -106,7 +126,7 @@ const RequestSlips = () => {
 				...values,
 				request_date: values.request_date ? values.request_date.format('YYYY-MM-DD') : null,
 				task_data: taskDataStr,
-				customer_data: finalCustomerData,
+				request_data: finalRequestData,
 			};
 
 			if (editingSlip) {
@@ -150,6 +170,9 @@ const RequestSlips = () => {
 	const handleDeleteTask = (index) => {
 		setTaskDataSource(prev => prev.filter((_, i) => i !== index));
 	};
+
+	const activeTabContent =
+		SERVICE_TYPE_TABS.find((item) => item.key === activeServiceType)?.content ?? <SlipRequestTab />;
 
 
 
@@ -279,38 +302,16 @@ const RequestSlips = () => {
 					size="small"
 					className="text-sm"
 				>
-					<div className="grid grid-cols-2 gap-x-4">
-						<Form.Item name="request_code" label="Request Code" style={{ marginBottom: 12 }}>
-							<Input />
-						</Form.Item>
-						<Form.Item name="request_date" label="Request Date" style={{ marginBottom: 12 }}>
-							<DatePicker className="w-full" format="YYYY-MM-DD" />
-						</Form.Item>
-						<Form.Item name="request_customer" label="Customer" style={{ marginBottom: 12 }}>
-							<Input />
-						</Form.Item>
-						<Form.Item name="project_name" label="Project" style={{ marginBottom: 12 }}>
-							<Input />
-						</Form.Item>
-						<Form.Item name="location" label="Location" style={{ marginBottom: 12 }}>
-							<Input />
-						</Form.Item>
-						<Form.Item name="site_address" label="Address" style={{ marginBottom: 12 }}>
-							<Input />
-						</Form.Item>
-						<Form.Item name="service_name" label="Service" style={{ marginBottom: 12 }}>
-							<Input />
-						</Form.Item>
-						<Form.Item name="service_type" label="Service Type" style={{ marginBottom: 12 }}>
-							<Select placeholder="Select service type" onChange={handleServiceTypeChange}>
-								<Select.Option value={1}>Slip Request</Select.Option>
-								<Select.Option value={2}>Contract Request</Select.Option>
-							</Select>
-						</Form.Item>
-						<Form.Item name="customer_data" label="Data" className="col-span-2" style={{ marginBottom: 12 }}>
-							<Input.TextArea rows={3} />
-						</Form.Item>
-					</div>
+					<Form.Item name="service_type" hidden>
+						<Input />
+					</Form.Item>
+					<Tabs
+						activeKey={activeServiceType}
+						items={SERVICE_TYPE_TABS.map(({ key, label }) => ({ key, label }))}
+						onChange={(key) => handleServiceTypeChange(Number(key))}
+						className="mb-4"
+					/>
+					{activeTabContent}
 
 					<div className="mt-6 border-t pt-4">
 						<h3 className="mb-4 text-lg font-medium">Task List</h3>

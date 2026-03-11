@@ -32,14 +32,14 @@ export const printRequestSlip = (record) => {
 			}
 		} catch (e) { }
 	}
-	let printCustomerData = record.customer_data || '';
-	if (printCustomerData) {
+	let printRequestData = record.request_data || '';
+	if (printRequestData) {
 		try {
-			let parsed = JSON.parse(printCustomerData);
+			let parsed = JSON.parse(printRequestData);
 			if (typeof parsed === 'string') {
-				printCustomerData = parsed;
+				printRequestData = parsed;
 			} else {
-				printCustomerData = JSON.stringify(parsed, null, 2);
+				printRequestData = JSON.stringify(parsed, null, 2);
 			}
 		} catch (e) { }
 	}
@@ -83,8 +83,8 @@ export const printRequestSlip = (record) => {
 					<td style="border: 1px solid #ddd; padding: 8px;">${record.service_type === 1 ? 'Slip Request' : record.service_type === 2 ? 'Contract Request' : record.service_type || ''}</td>
 				</tr>
 				<tr>
-					<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Customer Data</th>
-					<td style="border: 1px solid #ddd; padding: 8px;">${printCustomerData}</td>
+					<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Request Data</th>
+					<td style="border: 1px solid #ddd; padding: 8px;">${printRequestData}</td>
 				</tr>
 			</table>
 			
